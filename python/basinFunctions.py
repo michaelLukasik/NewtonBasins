@@ -58,16 +58,25 @@ def makeBasin(m, config, file):
     #plt.show() 
    
 def gifBasins(folder):
-    photoOrderList = np.linspace(0,359,360, dtype=int)
+    photoOrderList = np.linspace(0,49,50, dtype=int)
     frames = []
     for photo in photoOrderList:
+        print(folder + "*_"+str(photo)+r"_["+r"*.png")
         imageFile = glob.glob(folder + "*_"+str(photo)+r"_["+r"*.png")[0]
         print(photo, imageFile)
         new_frame = Image.open(imageFile)
         frames.append(new_frame)
-    imageio.mimsave(folder + 'GIF.gif', frames, loop = 0, duration = 1000 * 1/50)
+    imageio.mimsave(folder + 'GIF.gif', frames, loop = 0, duration = 1000 * 1/120)
     #frames[0].save(folder + 'GIF.gif', format='GIF',
     #           append_images=frames[1:],
     #           save_all=True,
     #           fps=120, loop=True)
     
+    
+def gifBasinsFileList(List):
+    frames = []
+    for photo in List:
+        print(photo)
+        new_frame = Image.open(photo[0])
+        frames.append(new_frame)
+    imageio.mimsave(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\Path1GIF.gif", frames, loop = 0, duration = 20)

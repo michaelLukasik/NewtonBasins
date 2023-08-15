@@ -124,3 +124,5 @@ Eigen::MatrixXcd customDriver1P(Eigen::MatrixXcd z, std::complex<double> a, std:
 	std::complex<double> expOffset(0., 1./M_PI);
 	return  exp(-(z.array().cos() - b * expOffset)) * (a - pow(z.array(), 3) * z.array().sin() + z.array().cos() * ((pow(z.array(), 3) - a) * z.array().sin() + 3 * pow(z.array(), 2)));
 }
+
+

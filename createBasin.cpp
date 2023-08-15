@@ -35,7 +35,7 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixSine(const Eigen::Mat
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = sine(plane).array() / cosine(plane).array();
+		Eigen::MatrixXcd dz = (sine(plane).array() + offset) / cosine(plane).array();
 		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
 		plane = plane.array() - dz.array();
 	}
@@ -50,7 +50,7 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixTan(const Eigen::Matr
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());;
-		Eigen::MatrixXcd dz = tangent(plane).array() / (secant(plane).array()* secant(plane).array());
+		Eigen::MatrixXcd dz = (tangent(plane).array() + offset) / (secant(plane).array()* secant(plane).array());
 		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
 		plane = plane.array() - dz.array();
 	}
@@ -65,7 +65,7 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixSinh(const Eigen::Mat
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = sinh(plane).array() / cosh(plane).array();
+		Eigen::MatrixXcd dz = (sinh(plane).array() + offset) / cosh(plane).array();
 		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
 		plane = plane.array() - dz.array();
 	}
@@ -79,7 +79,7 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixBesselSK(const Eigen:
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = y0(plane).array() / y0P(plane).array();
+		Eigen::MatrixXcd dz = (y0(plane).array() + offset) / y0P(plane).array();
 		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
 		plane = plane.array() - dz.array();
 	}
@@ -107,7 +107,7 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixBesselTwoTerm(const E
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = (j0(plane).array() + j1(plane).array()) / (j0P(plane).array() + j1P(plane).array());
+		Eigen::MatrixXcd dz = (j0(plane).array() + j1(plane).array() + offset) / (j0P(plane).array() + j1P(plane).array());
 		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
 		plane = plane.array() - dz.array();
 	}
@@ -129,7 +129,7 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixCubic(const Eigen::Ma
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = cubic(plane, a, b, c, d).array() / cubicP(plane, a, b, c).array();
+		Eigen::MatrixXcd dz = (cubic(plane, a, b, c, d).array() + offset) / cubicP(plane, a, b, c).array();
 		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
 		plane = plane.array() - dz.array();
 	}
@@ -186,13 +186,17 @@ void exportData(Eigen::MatrixXcd finalPlane, Eigen::MatrixXcd iterationMap, Conf
 
 int main() {
 	int numberImages = 180;
-	for (int offsetN = 0; offsetN < numberImages; offsetN++) {
+	for (int offsetN = 0; offsetN < numberImages ;offsetN++) {
+		double lissajousA(1.5);
+		double lissajousB(1.5);
+		double lissajousD(0.);
+		std::cout << float(offsetN) / float(numberImages);
+		std::complex<double> off(lissajousA * std::cos(lissajousD + ( 2.*M_PI * (float(offsetN) / float(numberImages)))), lissajousB * std::sin( (2. * M_PI) * float(offsetN) / float(numberImages)));
 
-		//std::complex<double> off(0.70710 * float((float(offsetN) / float(numberImages))), 0.70710 *(pow(float(offsetN)/float(numberImages),2)) );
-		std::complex<double> off(std::cos((2*M_PI*float(float( (2. * offsetN) + 45.) / float(2. * numberImages)))) , std::sin((2 * M_PI * float(float((2 * offsetN) + 45.) / float(2 * numberImages)))));
+		//std::complex<double> off( (1. - (float((2. * offsetN) ) / float(2. * numberImages))) *std::cos((2*M_PI*float(float( (2. * offsetN) + 45.) / float(2. * numberImages)))) , (1. - (float((2. * offsetN)) / float(2. * numberImages))) * std::sin((2 * M_PI * float(float((2 * offsetN) + 45.) / float(2 * numberImages)))));
+		
 
-
-		Config config(-M_PI*4., M_PI * 4., -M_PI * 4., M_PI * 4., off, "Bessel", 50, 1.e-12, 1000);
+		Config config(-M_PI*4., M_PI *4., -M_PI*4., M_PI * 4., off, "Bessel", 50, 1.e-12, 1000);
 		Eigen::MatrixXcd plane = config.makeScreen(config);
 		std::string domainString = config.getDomainString(config);
 
