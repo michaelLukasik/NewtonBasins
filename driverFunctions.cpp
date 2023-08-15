@@ -3,6 +3,7 @@
 #include <complex>
 #include <algorithm>
 #include <Eigen/Dense>
+#define M_PI 3.14159
 
 std::complex<double> sine(std::complex<double> z) {;
 	return std::sin(z);
@@ -72,24 +73,29 @@ Eigen::MatrixXcd secant(Eigen::MatrixXcd z) {
 
 
 Eigen::MatrixXcd j0(Eigen::MatrixXcd z) {
-	;
 	return z.array().sin() / z.array();
 }
 
 Eigen::MatrixXcd j0P(Eigen::MatrixXcd z) {
-	;
 	return (z.array()*z.array().cos() -z.array().sin()) / (z.array()*z.array());
 }
 
+Eigen::MatrixXcd j1(Eigen::MatrixXcd z) {
+	return z.array().sin() / (z.array() * z.array()) - (z.array().cos()/ z.array());
+}
+
+Eigen::MatrixXcd j1P(Eigen::MatrixXcd z) {
+	return ((z.array() * z.array() - 2.) * z.array().sin() + 2 * z.array() * z.array().cos()) / (z.array() * z.array() * z.array());
+}
+
 Eigen::MatrixXcd y0(Eigen::MatrixXcd z) {
-	;
 	return -z.array().cos() / z.array();
 }
 
 Eigen::MatrixXcd y0P(Eigen::MatrixXcd z) {
-	;
 	return (z.array()*z.array().sin() - z.array().cos()) / (z.array() * z.array());
 }
+
 
 
 Eigen::MatrixXcd cubic(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) {
@@ -106,4 +112,15 @@ Eigen::MatrixXcd sinh(Eigen::MatrixXcd z) {
 
 Eigen::MatrixXcd cosh(Eigen::MatrixXcd z) {
 	return z.array().cosh();
+}
+
+Eigen::MatrixXcd customDriver1(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { //d/dz(cos(z) (z^3 - a) e^(-(cos(z) - b i))) = e^(-cos(z) + i b) ((a - z^3) sin(z) + cos(z) ((z^3 - a) sin(z) + 3 z^2))
+	std::complex<double> expOffset(0., 1./M_PI);
+	return z.array().cos() * (pow(z.array(), 3) - a) * exp(-(z.array().cos() - b * expOffset));
+}
+
+
+Eigen::MatrixXcd customDriver1P(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { // d/dz(cos(z) (z^3 - a) e^(-(cos(z) - b i))) = e^(-cos(z) + i b) ((a - z^3) sin(z) + cos(z) ((z^3 - a) sin(z) + 3 z^2))
+	std::complex<double> expOffset(0., 1./M_PI);
+	return  exp(-(z.array().cos() - b * expOffset)) * (a - pow(z.array(), 3) * z.array().sin() + z.array().cos() * ((pow(z.array(), 3) - a) * z.array().sin() + 3 * pow(z.array(), 2)));
 }
