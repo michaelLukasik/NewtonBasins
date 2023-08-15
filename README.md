@@ -14,6 +14,10 @@ A nicer version of this is coming in the future but this is all still preliminar
 Varrying the input offset parameter c (a complex value) effects the basin's shape and behvaior depending on the input function. For an example, we look again at the case where the driving function is the zero order Bessel function (sinc function) with a variable c whose value is represented by the red circle traveling along c's path in the complex plane on the top left. The corresponding Newton Basin after 100 iterations is represeted on the right. These types of curves and paths can be evaluated for all values of c, some of which may lead to erratic behavior or improper focusing to the roots of the equation. 
 
 
+<picture>
+<img src= "https://github.com/michaelLukasik/NewtonBasins/blob/master/BesselFinal.gif" alt="Newton Basin driven by Bessel Function" width="1000" height="700">
+</picture>
+
 
 Coming up next is creating a general function to create a predefined path for the complex offset c. To begin with, these curves will likely be defined by Lissajous functions. 
 
