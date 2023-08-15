@@ -2,11 +2,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import imageio
-from PIL import Image, ImageSequence
+from PIL import Image, ImageSequence, ImageDraw, ImageFont
+import sympy
+
+besselFormula = r"$p(z) = \frac{sin(z)}{z} + c$"
+#sympy.preview(besselFormula, viewer='file', filename='besselFormula.png', euler=False, dvioptions=["-T", "tight", "-z", "0", "--truecolor", "-D 600", "-bg", "Transparent"])
+
 
 writergif = animation.PillowWriter(fps=50)
+bigfnt = ImageFont.truetype(r"C:\Windows\Fonts\cambria.ttc", 40)
+fnt = ImageFont.truetype(r"C:\Windows\Fonts\cambria.ttc", 25)
 
-def LJLocation(a,b,d,index, ph):
+zsymb = sympy.symbols('z')
+expr = sympy.sin(zsymb) /zsymb 
+lat = sympy.latex(expr) 
+
+
+
+def LJLocation(a,b,d,index, ph): 
     return a*np.cos( 2*np.pi * (index/180) + d) , b*np.sin( 2*np.pi * (index/180))
 
 def animate(i):
@@ -25,7 +38,7 @@ def examineGifs():
     
     
 def embedGifs():
-    canvass = Image.open(r"BLANK.png")
+    equation = Image.open(r"BesselEqn.png")
     path   =  Image.open('Path1.gif')
     pattern =  Image.open(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\Path1GIF.gif")
     totalH = max(path.size[0] ,pattern.size[0])
@@ -36,9 +49,10 @@ def embedGifs():
     for i in range(530):
         path.seek(i % path.n_frames)
         pattern.seek(i % pattern.n_frames)
-        frame = Image.new('RGB', (totalW-200, totalH), (255, 255, 255))
-        frame.paste(path, (0,0), mask=path.convert("RGBA"))
-        frame.paste(pattern, (path.size[1]-200,0), mask=pattern.convert("RGBA"))
+        frame = Image.new('RGB', (totalW-210, totalH), (255, 255, 255))
+        frame.paste(path, (45,0), mask=path.convert("RGBA"))
+        frame.paste(pattern, (path.size[1]-205,0), mask=pattern.convert("RGBA"))
+        frame.paste(equation, (45,620) , mask=equation.convert("RGBA"))
         frames.append(frame)
     frames[0].save("testint.gif", save_all=True, duration=20, loop=0, append_images=frames[1:])
 
@@ -85,7 +99,6 @@ ax.set_ylabel('Imag')
 ax.set_xlim(-1.1,3.5)
 ax.set_ylim(-1.1,9.0)
 ax.grid("on", lw = 0.5)
-
 ax.axvline(x=0, ymin = - 1, ymax = 10, c ='black', lw = 1, ls = ':')
 ax.axhline(y=0, xmin = - 1, xmax = 10, c ='black', lw = 1, ls = ':')
 
