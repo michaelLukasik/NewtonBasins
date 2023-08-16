@@ -57,26 +57,22 @@ def makeBasin(m, config, file):
     plt.savefig(file[:-4] + "_"+ config.cmap + "_" + str(config.tol) + ".png",bbox_inches='tight', transparent="True", pad_inches=0)
     #plt.show() 
    
-def gifBasins(folder):
-    photoOrderList = np.linspace(0,49,50, dtype=int)
+def gifBasins(folder, folderOrderList):
     frames = []
-    for photo in photoOrderList:
+    for photo in folderOrderList:
         print(folder + "*_"+str(photo)+r"_["+r"*.png")
         imageFile = glob.glob(folder + "*_"+str(photo)+r"_["+r"*.png")[0]
         print(photo, imageFile)
         new_frame = Image.open(imageFile)
         frames.append(new_frame)
-    imageio.mimsave(folder + 'GIF.gif', frames, loop = 0, duration = 1000 * 1/120)
-    #frames[0].save(folder + 'GIF.gif', format='GIF',
-    #           append_images=frames[1:],
-    #           save_all=True,
-    #           fps=120, loop=True)
+    imageio.mimsave(folder + 'GIF.gif', frames, loop = 0, duration = 1000 * 1/50)
+
     
     
-def gifBasinsFileList(List):
+def gifBasinsFileList(List,fileName):
     frames = []
     for photo in List:
         print(photo)
         new_frame = Image.open(photo[0])
         frames.append(new_frame)
-    imageio.mimsave(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\Path1GIF.gif", frames, loop = 0, duration = 20)
+    imageio.mimsave(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\"+fileName+r"\\"+fileName+r".gif", frames, loop = 0, duration = 20)

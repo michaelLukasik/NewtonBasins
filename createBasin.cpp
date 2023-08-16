@@ -185,14 +185,14 @@ void exportData(Eigen::MatrixXcd finalPlane, Eigen::MatrixXcd iterationMap, Conf
 }
 
 int main() {
-	int numberImages = 180;
+	int numberImages = 360;
 	for (int offsetN = 0; offsetN < numberImages ;offsetN++) {
 		double lissajousA(1.5);
 		double lissajousB(1.5);
 		double lissajousD(0.);
-		std::cout << float(offsetN) / float(numberImages);
-		std::complex<double> off(lissajousA * std::cos(lissajousD + ( 2.*M_PI * (float(offsetN) / float(numberImages)))), lissajousB * std::sin( (2. * M_PI) * float(offsetN) / float(numberImages)));
-
+		//std::cout << float(offsetN) / float(numberImages);
+		//std::complex<double> off(lissajousA * std::cos(lissajousD + ( 2.*M_PI * (float(offsetN) / float(numberImages)))), lissajousB * std::sin( (2. * M_PI) * float(offsetN) / float(numberImages)));
+		std::complex<double> off(2. * (1.0- (double(offsetN) / double(numberImages))) * std::cos(lissajousD + (2. * M_PI * 4.*(double(offsetN) / double(numberImages)))), 2. * (1.0 - (double(offsetN) / double(numberImages))) * std::sin(4. * (2. * M_PI) * double(offsetN) / double(numberImages)));
 		//std::complex<double> off( (1. - (float((2. * offsetN) ) / float(2. * numberImages))) *std::cos((2*M_PI*float(float( (2. * offsetN) + 45.) / float(2. * numberImages)))) , (1. - (float((2. * offsetN)) / float(2. * numberImages))) * std::sin((2 * M_PI * float(float((2 * offsetN) + 45.) / float(2 * numberImages)))));
 		
 
