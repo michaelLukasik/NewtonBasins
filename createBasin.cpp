@@ -192,45 +192,45 @@ int main() {
 		double lissajousD(0.);
 		//std::cout << float(offsetN) / float(numberImages);
 		//std::complex<double> off(lissajousA * std::cos(lissajousD + ( 2.*M_PI * (float(offsetN) / float(numberImages)))), lissajousB * std::sin( (2. * M_PI) * float(offsetN) / float(numberImages)));
-		std::complex<double> off(2. * (1.0- (double(offsetN) / double(numberImages))) * std::cos(lissajousD + (2. * M_PI * 4.*(double(offsetN) / double(numberImages)))), 2. * (1.0 - (double(offsetN) / double(numberImages))) * std::sin(4. * (2. * M_PI) * double(offsetN) / double(numberImages)));
+		std::complex<double> offset(2. * (1.0- (double(offsetN) / double(numberImages))) * std::cos(lissajousD + (2. * M_PI * 4.*(double(offsetN) / double(numberImages)))), 2. * (1.0 - (double(offsetN) / double(numberImages))) * std::sin(4. * (2. * M_PI) * double(offsetN) / double(numberImages)));
 		//std::complex<double> off( (1. - (float((2. * offsetN) ) / float(2. * numberImages))) *std::cos((2*M_PI*float(float( (2. * offsetN) + 45.) / float(2. * numberImages)))) , (1. - (float((2. * offsetN)) / float(2. * numberImages))) * std::sin((2 * M_PI * float(float((2 * offsetN) + 45.) / float(2 * numberImages)))));
 		
 
-		Config config(-M_PI*4., M_PI *4., -M_PI*4., M_PI * 4., off, "Bessel", 50, 1.e-12, 1000);
+		Config config(-M_PI*4., M_PI *4., -M_PI*4., M_PI * 4., offset, "Bessel", 50, 1.e-12, 1000);
 		Eigen::MatrixXcd plane = config.makeScreen(config);
 		std::string domainString = config.getDomainString(config);
 
 		if (config.getDriver() == "Cubic") {
-			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixCubic(plane, config, off);
-			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, off, offsetN);
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixCubic(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else if (config.getDriver() == "Sine") {
-			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixSine(plane, config, off);
-			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, off, offsetN);
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixSine(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else if (config.getDriver() == "Sinh") {
-			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixSinh(plane, config, off);
-			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, off, offsetN);
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixSinh(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else if (config.getDriver() == "Tan") {
-			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXcd> finalOutput = iterateMatrixTan(plane, config, off);
-			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, off, offsetN);
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXcd> finalOutput = iterateMatrixTan(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else if (config.getDriver() == "Bessel") {
-			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixBessel(plane, config, off);
-			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, off, offsetN);
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixBessel(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else if (config.getDriver() == "BesselSK") {
-			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixBesselSK(plane, config, off);
-			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, off, offsetN);
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixBesselSK(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else if (config.getDriver() == "BesselTwoTerm") {
-			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixBesselTwoTerm(plane, config, off);
-			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, off, offsetN);
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixBesselTwoTerm(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else if (config.getDriver() == "CustomDriver1") {
-			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixCustomDriver1(plane, config, off);
-			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, off, offsetN);
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixCustomDriver1(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else {
 			std::cout << config.getDriver();
