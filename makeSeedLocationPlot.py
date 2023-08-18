@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import imageio
+import pandas as pd
 from PIL import Image, ImageSequence, ImageDraw, ImageFont
 import sympy
 
@@ -47,7 +48,7 @@ def embedGifs(pathString):
     totalH = max(path.size[0] ,pattern.size[0])
     totalW = max(path.size[1] ,equation.size[1]) + pattern.size[1]
     frames = []
-    for i in range(391):
+    for i in range(234):
         print("path n frames " ,path.n_frames)
         print(i , pattern.n_frames)
         path.seek(i % path.n_frames)
@@ -92,16 +93,16 @@ for i in range(len(spiralX)):
     fullPathY.append(spiralY[i])
 '''
  ## Path 2 
-spiralX = [2*(1-x/(2*np.pi))*np.cos(4*x) for x in np.linspace(0.,2*np.pi,360)] 
-spiralY = [2*(1-y/(2*np.pi))*np.sin(4*y) for y in np.linspace(0.,2*np.pi,360)]
-straightLineX = [2*(x/30) for x in np.linspace(0,29,30)]
+#spiralX = [2*(1-x/(2*np.pi))*np.cos(4*x) for x in np.linspace(0.,2*np.pi,360)] 
+#spiralY = [2*(1-y/(2*np.pi))*np.sin(4*y) for y in np.linspace(0.,2*np.pi,360)]
+#straightLineX = [2*(x/30) for x in np.linspace(0,29,30)]
 
-for i in range(len(spiralX)):
-    fullPathX.append(spiralX[i])
-    fullPathY.append(spiralY[i])
-for i in range(len(straightLineX)):
-    fullPathX.append(straightLineX[i])
-    fullPathY.append(0.)
+#for i in range(len(spiralX)):
+#    fullPathX.append(spiralX[i])
+#   fullPathY.append(spiralY[i])
+#for i in range(len(straightLineX)):
+#    fullPathX.append(straightLineX[i])
+#    fullPathY.append(0.)
 
 ### Path 3 
 
@@ -109,7 +110,11 @@ for i in range(len(straightLineX)):
 #    x,y = LJLocation(2.,3.,3*np.pi/4.,i) 
 #    fullPathX.append(x)
 #    fullPathY.append(y)
-
+df= pd.read_csv("python/tracks/barcalona/barcalonaTrackPoints.csv")
+for i in range(len(df)):
+    print(i)
+    fullPathX.append(df["X"][i])
+    fullPathY.append(df["Y"][i])
 
 ###
 fig, ax = plt.subplots(figsize = (4,4))
@@ -117,8 +122,8 @@ fig, ax = plt.subplots(figsize = (4,4))
 ax.set_aspect(aspect='equal')
 ax.set_xlabel('Real')
 ax.set_ylabel('Imag')
-ax.set_xlim(-2,2)
-ax.set_ylim(-2,2)
+ax.set_xlim(0,125)
+ax.set_ylim(-3.5,35)
 ax.grid("on", lw = 0.5)
 ax.axvline(x=0, ymin = - 1, ymax = 10, c ='black', lw = 1, ls = ':')
 ax.axhline(y=0, xmin = - 1, xmax = 10, c ='black', lw = 1, ls = ':')
@@ -132,9 +137,9 @@ ax.axhline(y=0, xmin = - 1, xmax = 10, c ='black', lw = 1, ls = ':')
 #seedLocation, = ax.plot(fullPathX[0],fullPathY[0], label= "c = ("+str(fullPathX[0])+","+str(fullPathY[0])+")", marker="o", ms=10, markerfacecolor="None",
 #         markeredgecolor='red', markeredgewidth=1)
 
-#ani = animation.FuncAnimation(fig, animate, repeat=True, frames=len(fullPathX)-1, interval = 20 )
+#ni = animation.FuncAnimation(fig, animate, repeat=True, frames=len(fullPathX)-1, interval = 20 )
 #plt.tight_layout()
-#ani.save(r"paths/SpiralInwards4Cycle2Radius360ImagesPath.gif",writer=writergif)
+#ani.save(r"paths/barca.gif",writer=writergif)
 #plt.show()
 #plt.clf()
-embedGifs("SpiralInwards4Cycle2Radius360Images")
+embedGifs("Barca")

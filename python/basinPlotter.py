@@ -13,16 +13,16 @@ for ph in phaseShifts:
     
 
 if __name__ == "__main__":
-    photoOrderList = np.linspace(0,359,360, dtype=int)
+    photoOrderList = np.linspace(0,233,234, dtype=int)
     fileList = []
-    fileNameStr = r"SpiralInwards4Cycle2Radius360Images"
+    fileNameStr = r"barca"
     
-    #print(photoOrderList)
-    #files = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\"+fileNameStr+r"Part2\\*.csv")
-    #for photo in photoOrderList:
-    #    file = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\"+fileNameStr+r"Part2\*_"+str(photo)+r"_["+r"*.csv")[0]
-    #    simData = basinFunctions.readCSV(file)
-    #    basinFunctions.plot_newton_fractal(simData, config, file)    
+    print(photoOrderList)
+    files = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\"+fileNameStr+r"\\*.csv")
+    for photo in photoOrderList:
+        file = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\"+fileNameStr+r"\*_"+str(photo)+r"_["+r"*.csv")[0]
+        simData = basinFunctions.readCSV(file)
+        basinFunctions.plot_newton_fractal(simData, config, file)    
     
     
     ### Path 1 
@@ -55,15 +55,15 @@ if __name__ == "__main__":
     
     ### Path 3 Big Spiral Inwards, back out to start
     
-    photoList = np.linspace(0,359,360,dtype=int)
+    photoList = np.linspace(0,233,234,dtype=int)
     for photo in photoList:
         pathFile = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\"+fileNameStr+"\\" + r"*_"+str(photo)+r"_["+r"*.png")
         fileList.append(pathFile)
     
-    photoList1 = np.linspace(0,29,30,dtype=int)
-    for photo in photoList1: 
-        pathFile = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\"+fileNameStr+"Part2\\" + r"*_"+str(photo)+r"_["+r"*.png")
-        fileList.append(pathFile)
+    #photoList1 = np.linspace(0,29,30,dtype=int)
+    #for photo in photoList1: 
+    #    pathFile = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\"+fileNameStr+"Part2\\" + r"*_"+str(photo)+r"_["+r"*.png")
+    #    fileList.append(pathFile)
     
     basinFunctions.gifBasinsFileList(fileList, fileNameStr)
 
