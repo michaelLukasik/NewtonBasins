@@ -126,3 +126,10 @@ Eigen::MatrixXcd customDriver1P(Eigen::MatrixXcd z, std::complex<double> a, std:
 }
 
 
+Eigen::MatrixXcd riemannZeta(Eigen::MatrixXcd z, std::complex<double> q, std::complex<double> n) { // Eigen only supports exponents >1 and shifts >0 https://eigen.tuxfamily.org/dox/unsupported/namespaceEigen.html
+	Eigen::MatrixXcd expArray(z.size(), z.size());
+	expArray.array() += q;
+	std::cout << expArray << std::endl;
+	return z.array().zeta(expArray.array());
+}
+
