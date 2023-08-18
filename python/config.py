@@ -20,7 +20,7 @@ offset = "[3.141590,0.000000]"
 class Config: 
     
     colors =  ['b', 'r', 'g', 'y']
-    n = 500 ## Number of divisions on the screen (n x n total pixels)
+    n = 1000 ## Number of divisions on the screen (n x n total pixels)
     domain = [-np.pi, np.pi, -np.pi, np.pi]  
     tol = 1e-16
     cmap = "twilight"
