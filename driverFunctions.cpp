@@ -3,7 +3,17 @@
 #include <complex>
 #include <algorithm>
 #include <Eigen/Dense>
+#include <numbers>
+
+#include <vector>
+
+
 #define M_PI 3.14159
+
+const double LOWER_THRESHOLD = 1.0e-6;
+const double UPPER_BOUND = 1.0e+4;
+const int maxTermsInZetaSummation = 50;
+
 
 std::complex<double> sine(std::complex<double> z) {;
 	return std::sin(z);
@@ -125,11 +135,77 @@ Eigen::MatrixXcd customDriver1P(Eigen::MatrixXcd z, std::complex<double> a, std:
 	return  exp(-(z.array().cos() - b * expOffset)) * (a - pow(z.array(), 3) * z.array().sin() + z.array().cos() * ((pow(z.array(), 3) - a) * z.array().sin() + 3 * pow(z.array(), 2)));
 }
 
+Eigen::MatrixXcd zeta(Eigen::MatrixXcd z) { // Eigen only supports exponents >1 and shifts >0 https://eigen.tuxfamily.org/dox/unsupported/namespaceEigen.html
 
-Eigen::MatrixXcd riemannZeta(Eigen::MatrixXcd z, std::complex<double> q, std::complex<double> n) { // Eigen only supports exponents >1 and shifts >0 https://eigen.tuxfamily.org/dox/unsupported/namespaceEigen.html
-	Eigen::MatrixXcd expArray(z.size(), z.size());
-	expArray.array() += q;
-	std::cout << expArray << std::endl;
-	return z.array().zeta(expArray.array());
+	Eigen::MatrixXcd sum = Eigen::MatrixXcd::Zero(z.rows(), z.cols());
+	Eigen::MatrixXcd initialArray = Eigen::MatrixXcd::Zero(z.rows(), z.cols());
+	Eigen::MatrixXcd sumFlattened = sum.reshaped<Eigen::RowMajor>().transpose();
+	Eigen::MatrixXcd zFlattened = z.reshaped<Eigen::RowMajor>().transpose();
+
+	Eigen::MatrixXcd terms = Eigen::MatrixXcd::Zero(maxTermsInZetaSummation, zFlattened.cols());
+
+
+	std::complex<double> half(0.5, 0.0);
+	std::complex<double> one(1.0, 0.0);
+	std::complex<double> two(2.0, 0.0);
+	std::complex<double> rev(-1.0, 0.0);
+
+
+	
+	terms.row(0) = half / (one - pow(two, (one - zFlattened.array())));
+	for (int n = 1; n < maxTermsInZetaSummation; n++){
+		std::complex<double> nCplx(n, 0.0); //complex index
+		for (int k = 0; k < n; k++){
+			std::complex<double> kCplx(k, 0.0); //complex index
+			terms.row(k) *= half * (nCplx / (nCplx - kCplx));
+			sumFlattened += terms.row(k);
+		}
+		terms.row(n).array() = (rev * terms.row(n - 1).array() * pow((nCplx / (nCplx + one)), zFlattened.array()) / nCplx);
+		sumFlattened.array() += terms.row(n).array();
+	}
+	return sumFlattened.reshaped(z.rows(), z.cols());
 }
+
+
+Eigen::MatrixXcd zetaP(Eigen::MatrixXcd z){
+	std::complex<double> one(1.0, 0.0);
+	std::complex<double> im(0.0, 1.0);
+
+	Eigen::MatrixXcd sum = Eigen::MatrixXcd::Zero(z.rows(), z.cols());
+	for (int i = 1; i < maxTermsInZetaSummation; i++) {
+		sum.array() += (log(double(i)) / pow(i, z.array()));
+	}
+	return -1. * sum;
+}
+
+
+void zetaPTest()
+{
+	Eigen::MatrixXcd z(2,2);
+	std::complex<double> im(0.0, 1.0);
+	z(0, 0) = 0.73 + 9.11 * im;
+	z(0, 1) = 0.1 + 1.7 * im;
+	z(1, 0) = 10.9 - 7. * im;
+	z(1, 1) = 0.01 - 0.2 * im;
+	std::complex<double> testingZ(0.73, 9.11);
+	std::complex<double> one(1.0, 0.0);
+	std::complex<double> sumTestingZ(0.,0.);
+
+	std::complex<double> testZ(1, 0);
+	Eigen::MatrixXcd testSum(2,2);
+
+
+
+	for (int k = 1; k < 100; k++) {
+		if (k > 98) { std::cout <<  z << std::endl; }
+		testSum.array() += (  log(double(k)) / pow(k, z.array())  );
+	}
+
+	for (int k = 1; k < 100; k++) {
+
+		sumTestingZ += std::log(double(k)) / std::pow(k, testingZ)  ; ;
+		//sumTestingZ += testingZ;
+	}
+}
+
 

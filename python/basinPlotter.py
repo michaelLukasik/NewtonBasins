@@ -13,14 +13,13 @@ for ph in phaseShifts:
     
 
 if __name__ == "__main__":
-    photoOrderList = np.linspace(0,179,180, dtype=int)
+    photoOrderList = np.linspace(0,0,1, dtype=int)
     fileList = []
     print(photoOrderList)
-    #files = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\\LissaJous _A1.5B1.5D0\\*.csv")
-    #for photo in photoOrderList:
-    #    file = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\variableOffset\LissaJous _A1.5B1.5D0\*_"+str(photo)+r"_["+r"*.csv")[0]
-    #    simData = basinFunctions.readCSV(file)
-    #    basinFunctions.plot_newton_fractal(simData, config, file)    
+    for photo in photoOrderList:
+        file = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Zeta\variableOffset\*_5000_50_*"+str(photo)+r"_["+r"*.csv")[0]
+        simData = basinFunctions.readCSV(file)
+        basinFunctions.plot_newton_fractal(simData, config, file)    
     
     
     ### Path 1 
