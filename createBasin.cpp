@@ -332,7 +332,7 @@ int main() {
 		double lissajousD(0.);
 		std::complex<double> offset(0., 0.);
 
-		Config config(-M_PI/10., M_PI / 10., -M_PI / 10., M_PI / 10., offset, "Halley", "CoshSinc", 50, 1e-3, 3000);
+		Config config(-M_PI/10., M_PI / 10., -M_PI / 10., M_PI / 10., offset, "Halley", "CoshSinc", 30, 1e-3, 3000);
 		config.coutParams();
 		Eigen::MatrixXcd plane = config.makeScreen(config);
 		std::string domainString = config.getDomainString(config);

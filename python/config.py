@@ -20,10 +20,10 @@ offset = "[3.141590,0.000000]"
 class Config: 
     
     colors =  ['b', 'r', 'g', 'y']
-    n = 500 ## Number of divisions on the screen (n x n total pixels)
+    n = 3000 ## Number of divisions on the screen (n x n total pixels)
     domain = [-np.pi, np.pi, -np.pi, np.pi]  
     tol = 1e-3
-    cmap = "twilight_r"
+    cmap = "gray"
     its = "100"
     #file = r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\CustomDriver1\\" +tenDomain+r"_"+its+"_"+str(n)+".csv"
     file = r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\Bessel\\variableOffset\\VaryingReals\\" +t4piDomain+r"_"+its+"_"+str(n)+"_"+offset+".csv"

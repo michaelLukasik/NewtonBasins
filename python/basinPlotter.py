@@ -17,7 +17,7 @@ if __name__ == "__main__":
     fileList = []
     print(photoOrderList)
     for photo in photoOrderList:
-        file = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\CoshSinc\variableOffset\\Halley\\*_3000_*"+str(photo)+r"_["+r"*.csv")[0]
+        file = glob.glob(r"C:\Users\Michael\Documents\Programming\NewtonBasinImages\CoshSinc\variableOffset\\Halley\\*_30_3000_*"+str(photo)+r"_["+r"*.csv")[0]
         simData = basinFunctions.readCSV(file)
         basinFunctions.plot_newton_fractal(simData, config, file)    
     
