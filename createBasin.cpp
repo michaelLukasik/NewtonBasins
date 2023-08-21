@@ -16,7 +16,6 @@ void fillFinalPlane(Eigen::MatrixXcd &finalPlane, Eigen::MatrixXd& iterationMap,
 	for (int i = 0; i < dz.size(); i++) {
 		//std::cout << i << ":  " << std::abs(dz(i)) << std::endl;
 		if (std::abs(dz(i)) < tol && std::abs(finalPlane(i).real()) == 0 && std::abs(finalPlane(i).imag()) == 0) {
-			//std::cout << "plane size = " << "    :  " << plane.size() << std::endl;
 			finalPlane(i) = plane(i);
 			iterationMap(i) = it;
 		}
@@ -94,7 +93,8 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixBessel(const Eigen::M
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = (j0(plane).array() + offset) / j0P(plane).array();
+		//Eigen::MatrixXcd dz = (j0(plane).array() + offset) / j0P(plane).array();
+		Eigen::MatrixXcd dz = 2 * (j0(plane).array() * j0P(plane).array()) / (2 * pow(j0P(plane).array(), 2) - j0(plane).array() * j0PP(plane).array());
 		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
 		plane = plane.array() - dz.array();
 	}
@@ -139,31 +139,21 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixCubic(const Eigen::Ma
 }
 
 std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixZeta(const Eigen::MatrixXcd plane0, Config& config, std::complex<double> offset) {
+	std::complex<double> zeros(0., 0.);
 	Eigen::MatrixXcd plane = plane0;
 	Eigen::MatrixXcd finalPlane = plane0.array() - plane0.array();
 	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
 
-
-	
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		if (i == 0) {
-			Eigen::MatrixXcd dz = (zeta(plane).array() + offset) / zetaP(plane).array();
-			std::cout << plane.array() << std::endl;
-			std::cin.ignore();
-			plane.array() = plane.array() - dz.array();
-			std::cout << plane.array() << std::endl;
-			std::cin.ignore();
-			std::cout << zeta(plane).array()<< std::endl;
-			std::cin.ignore();
-			std::cout << zetaP(plane).array() << std::endl;
-			std::cin.ignore();
-
-		}
-		if (i > 0) {
-			Eigen::MatrixXcd dz = (zeta(plane).array()) / zetaP(plane).array();
-			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
-			plane.array() = plane.array() - dz.array();
+		Eigen::MatrixXcd dz = (zeta(plane).array()) / zetaP(plane).array();
+		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+		plane.array() = plane.array() - dz.array();
+		if (i == 0  || i == config.getIterations() - 1) {
+			//std::cout << "Plane At  " << i << std::endl;
+			//std::cout << plane.array() << i << std::endl;
+			//std::cout << "DZ's for i= " << i << std::endl;
+			//std::cout << abs(dz.array()) << std::endl;
 		}
 	}
 	return std::make_tuple(finalPlane, iterationMap);
@@ -200,7 +190,8 @@ void exportData(Eigen::MatrixXcd finalPlane, Eigen::MatrixXcd iterationMap, Conf
 
 	Eigen::VectorXd finalPlaneWF(5);
 	for (int i = 0; i < finalPlane.rows()* finalPlane.cols(); i++) {
-		finalPlaneWF << finalPlane(i).real(), finalPlane(i).imag(), offset.real() + (std::floor(i / config.getScreenDivs())* screenStepSize) - screenSize/2., offset.imag() + ((i % config.getScreenDivs()) * screenStepSize) - screenSize/2. , iterationMap(i).real();
+		finalPlaneWF << finalPlane(i).real(), finalPlane(i).imag(), offset.imag() + ((i % config.getScreenDivs()) * screenStepSize) - screenSize / 2., offset.real() + (std::floor(i / config.getScreenDivs()) * screenStepSize) - screenSize / 2, iterationMap(i).real();
+
 		std::vector<double> finalPlaneWFVector(finalPlaneWF.data(), finalPlaneWF.data() + finalPlaneWF.size());
 		finalPlaneVectors.push_back(finalPlaneWFVector);
 	}
@@ -217,19 +208,15 @@ void exportData(Eigen::MatrixXcd finalPlane, Eigen::MatrixXcd iterationMap, Conf
 }
 
 int main() {
-	zetaPTest();
+	std::complex<long double> testing(10., 10.);
 	int numberImages = 1;
 	for (int offsetN = 0; offsetN < numberImages ;offsetN++) {
 		double lissajousA(1.5);
 		double lissajousB(1.5);
 		double lissajousD(0.);
-		//std::cout << float(offsetN) / float(numberImages);
-		//std::complex<double> off(lissajousA * std::cos(lissajousD + ( 2.*M_PI * (float(offsetN) / float(numberImages)))), lissajousB * std::sin( (2. * M_PI) * float(offsetN) / float(numberImages)));
-		//std::complex<double> offset(2. * (1.0- (double(offsetN) / double(numberImages))) * std::cos(lissajousD + (2. * M_PI * 4.*(double(offsetN) / double(numberImages)))), 2. * (1.0 - (double(offsetN) / double(numberImages))) * std::sin(4. * (2. * M_PI) * double(offsetN) / double(numberImages)));
-		//std::complex<double> off( (1. - (float((2. * offsetN) ) / float(2. * numberImages))) *std::cos((2*M_PI*float(float( (2. * offsetN) + 45.) / float(2. * numberImages)))) , (1. - (float((2. * offsetN)) / float(2. * numberImages))) * std::sin((2 * M_PI * float(float((2 * offsetN) + 45.) / float(2 * numberImages)))));
-		std::complex<double> offset(0, 0.);
+		std::complex<double> offset(M_PI/3, 0.);
 
-		Config config(-10., 10., -10., 10., offset, "Zeta", 5000, 1e-4, 50);
+		Config config(-M_PI/4., M_PI/4., -M_PI/4., M_PI/4., offset, "Bessel", 30, 1e-3, 3000);
 		Eigen::MatrixXcd plane = config.makeScreen(config);
 		std::string domainString = config.getDomainString(config);
 

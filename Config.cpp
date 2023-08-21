@@ -15,9 +15,7 @@ Eigen::MatrixXcd Config::makeScreen(Config config) {
 
 	for (int realPixel = 0; realPixel < config.getScreenDivs(); realPixel++) {
 		for (int imPixel = 0; imPixel < config.getScreenDivs(); imPixel++) {
-			
 			std::complex<double> val( (realPixel*screenXSpacing) - screenLength/2., (imPixel * screenYSpacing) - screenLength / 2.);
-			
 			complexPlane(realPixel, imPixel) = val + std::complex<double> (config.getOffsetReal(), config.getOffsetImag());
 		}
 	}

@@ -31,6 +31,7 @@ Eigen::MatrixXcd cosh(Eigen::MatrixXcd z);
 
 Eigen::MatrixXcd j0(Eigen::MatrixXcd z);
 Eigen::MatrixXcd j0P(Eigen::MatrixXcd z);
+Eigen::MatrixXcd j0PP(Eigen::MatrixXcd z);
 
 Eigen::MatrixXcd j1(Eigen::MatrixXcd z);
 Eigen::MatrixXcd j1P(Eigen::MatrixXcd z);
@@ -48,4 +49,5 @@ Eigen::MatrixXcd zetaP(Eigen::MatrixXcd z);
 Eigen::MatrixXcd customDriver1(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
 Eigen::MatrixXcd customDriver1P(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
 
+std::complex<double> computeZeta(std::complex<double> s);
 void zetaPTest();

@@ -38,7 +38,7 @@ def plot_newton_fractal(simData, config, file):  ## Adapted from the SciPy Docs 
     z = (simData[0] + 1j*simData[1])
     for iz0,z0 in enumerate(z):
         i_iter = basinFunctions.get_iteration_index(iterations, simData[4], config)
-        m[math.floor(iz0/config.n), math.floor(iz0 % config.n)] = i_iter[0][iz0]
+        m[math.floor(iz0/config.n),math.floor(iz0 % config.n)] = i_iter[0][iz0]
         #print(m)
         #if(iz0%100 == 0): 
         #    print(iz0)
