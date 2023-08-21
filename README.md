@@ -15,10 +15,9 @@ Varrying the input offset parameter c (a complex value) effects the basin's shap
 
 
 <picture>
-<img src= "https://github.com/michaelLukasik/NewtonBasins/blob/master/BesselFinal.gif" alt="Newton Basin driven by Bessel Function" width="1000" height="700">
+<img src= "https://github.com/michaelLukasik/NewtonBasins/blob/master/Examples/BesselFinal.gif" alt="Newton Basin driven by Bessel Function" width="1000" height="700">
 </picture>
 
 
-Coming up next is creating a general function to create a predefined path for the complex offset c. To begin with, these curves will likely be defined by Lissajous functions. 
 
 
