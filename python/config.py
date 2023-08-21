@@ -20,7 +20,7 @@ offset = "[3.141590,0.000000]"
 class Config: 
     
     colors =  ['b', 'r', 'g', 'y']
-    n = 3000 ## Number of divisions on the screen (n x n total pixels)
+    n = 500 ## Number of divisions on the screen (n x n total pixels)
     domain = [-np.pi, np.pi, -np.pi, np.pi]  
     tol = 1e-3
     cmap = "twilight_r"
@@ -30,10 +30,3 @@ class Config:
     phaseShift = 0.
     
     
-def makeBasin(m, config, file):
-    print("Making basin")
-    plt.figure(figsize = (10,10))
-    plt.imshow(m, cmap=config.cmap, origin='lower')
-    plt.axis('off')
-    plt.savefig(file[:-4] + "_"+ config.cmap + "_" + str(config.tol) + ".png",bbox_inches='tight', transparent="True", pad_inches=0)
-    #plt.show() 

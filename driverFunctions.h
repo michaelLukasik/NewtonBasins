@@ -23,11 +23,19 @@ std::complex<double> cubicP(std::complex<double> z, std::complex<double> a, std:
 
 Eigen::MatrixXcd sine(Eigen::MatrixXcd z);
 Eigen::MatrixXcd cosine(Eigen::MatrixXcd z);
+
 Eigen::MatrixXcd tangent(Eigen::MatrixXcd z);
+Eigen::MatrixXcd tangentP(Eigen::MatrixXcd z);
+Eigen::MatrixXcd tangentPP(Eigen::MatrixXcd z);
+
 Eigen::MatrixXcd secant(Eigen::MatrixXcd z);
 
 Eigen::MatrixXcd sinh(Eigen::MatrixXcd z);
 Eigen::MatrixXcd cosh(Eigen::MatrixXcd z);
+
+Eigen::MatrixXcd coshSinc(Eigen::MatrixXcd z);
+Eigen::MatrixXcd coshSincP(Eigen::MatrixXcd z);
+Eigen::MatrixXcd coshSincPP(Eigen::MatrixXcd z);
 
 Eigen::MatrixXcd j0(Eigen::MatrixXcd z);
 Eigen::MatrixXcd j0P(Eigen::MatrixXcd z);
@@ -35,9 +43,13 @@ Eigen::MatrixXcd j0PP(Eigen::MatrixXcd z);
 
 Eigen::MatrixXcd j1(Eigen::MatrixXcd z);
 Eigen::MatrixXcd j1P(Eigen::MatrixXcd z);
+Eigen::MatrixXcd j1PP(Eigen::MatrixXcd z);
+
+
 
 Eigen::MatrixXcd y0(Eigen::MatrixXcd z);
 Eigen::MatrixXcd y0P(Eigen::MatrixXcd z);
+Eigen::MatrixXcd y0PP(Eigen::MatrixXcd z);
 
 Eigen::MatrixXcd cubic(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
 Eigen::MatrixXcd cubicP(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c);
@@ -48,6 +60,16 @@ Eigen::MatrixXcd zetaP(Eigen::MatrixXcd z);
 
 Eigen::MatrixXcd customDriver1(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
 Eigen::MatrixXcd customDriver1P(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
+Eigen::MatrixXcd customDriver1PP(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
+
+Eigen::MatrixXcd customDriver2(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
+Eigen::MatrixXcd customDriver2P(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
+Eigen::MatrixXcd customDriver2PP(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
+
+Eigen::MatrixXcd customDriver3(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
+Eigen::MatrixXcd customDriver3P(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
+Eigen::MatrixXcd customDriver3PP(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d);
+
 
 std::complex<double> computeZeta(std::complex<double> s);
 void zetaPTest();

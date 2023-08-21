@@ -32,6 +32,7 @@ std::string Config::getDomainString(Config& config) {
 	double offsetIm = config.getOffsetImag();
 
 
+
 	std::string domainString = "[";
 	std::vector<double> domain{ xmin,xmax,ymin,ymax };
 	for (auto i : domain) {

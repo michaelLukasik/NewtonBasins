@@ -33,12 +33,18 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixSine(const Eigen::Mat
 	Eigen::MatrixXcd finalPlane = plane0.array() - plane0.array();
 	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
 
-
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = (sine(plane).array() + offset) / cosine(plane).array();
-		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
-		plane = plane.array() - dz.array();
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (sine(plane).array() * cosine(plane).array()) / (2 * pow(cosine(plane).array(), 2) - sine(plane).array() * -1.0*sine(plane).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = (sine(plane).array() + offset) / cosine(plane).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
 	}
 	return { finalPlane, iterationMap };
 }
@@ -50,10 +56,17 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixTan(const Eigen::Matr
 	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
 
 	for (int i = 0; i < config.getIterations(); i++) {
-		printIteration(i, config.getIterations());;
-		Eigen::MatrixXcd dz = (tangent(plane).array() + offset) / (secant(plane).array()* secant(plane).array());
-		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
-		plane = plane.array() - dz.array();
+		printIteration(i, config.getIterations());
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (tangent(plane).array() * tangentP(plane).array()) / (2 * pow(tangentP(plane).array(), 2) - tangent(plane).array() * tangentPP(plane).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = (tangent(plane).array() + offset) / tangentP(plane).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
 	}
 	return { finalPlane, iterationMap };
 }
@@ -63,12 +76,42 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixSinh(const Eigen::Mat
 	Eigen::MatrixXcd plane = plane0;
 	Eigen::MatrixXcd finalPlane = plane0.array() - plane0.array();
 	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
+	
+	for (int i = 0; i < config.getIterations(); i++) {
+		printIteration(i, config.getIterations());
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (sinh(plane).array() * cosh(plane).array()) / (2 * pow(cosh(plane).array(), 2) - sinh(plane).array() * sinh(plane).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = (sinh(plane).array() + offset) / cosh(plane).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+	}
+	return { finalPlane, iterationMap };
+}
+
+
+std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixCoshSinc(const Eigen::MatrixXcd plane0, Config& config, std::complex<double> offset) {
+
+	Eigen::MatrixXcd plane = plane0;
+	Eigen::MatrixXcd finalPlane = plane0.array() - plane0.array();
+	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = (sinh(plane).array() + offset) / cosh(plane).array();
-		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
-		plane = plane.array() - dz.array();
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (coshSinc(plane).array() * coshSincP(plane).array()) / (2 * pow(coshSincP(plane).array(), 2) - coshSinc(plane).array() * coshSincPP(plane).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = (coshSinc(plane).array() + offset) / coshSincP(plane).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
 	}
 	return { finalPlane, iterationMap };
 }
@@ -80,9 +123,16 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixBesselSK(const Eigen:
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = (y0(plane).array() + offset) / y0P(plane).array();
-		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
-		plane = plane.array() - dz.array();
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (y0(plane).array() * y0P(plane).array()) / (2 * pow(y0P(plane).array(), 2) - y0(plane).array() * y0PP(plane).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = (y0(plane).array() + offset) / y0P(plane).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
 	}
 	return { finalPlane, iterationMap };
 }
@@ -90,13 +140,20 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixBessel(const Eigen::M
 	Eigen::MatrixXcd plane = plane0.array();
 	Eigen::MatrixXcd finalPlane = plane0.array() - plane0.array();
 	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
+	Eigen::MatrixXcd dz;
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		//Eigen::MatrixXcd dz = (j0(plane).array() + offset) / j0P(plane).array();
-		Eigen::MatrixXcd dz = 2 * (j0(plane).array() * j0P(plane).array()) / (2 * pow(j0P(plane).array(), 2) - j0(plane).array() * j0PP(plane).array());
-		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
-		plane = plane.array() - dz.array();
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (j0(plane).array() * j0P(plane).array()) / (2 * pow(j0P(plane).array(), 2) - j0(plane).array() * j0PP(plane).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = (j0(plane).array() + offset) / j0P(plane).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
 	}
 	return { finalPlane, iterationMap };
 }
@@ -107,13 +164,21 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixBesselTwoTerm(const E
 	Eigen::MatrixXcd finalPlane = plane0.array() - plane0.array();
 	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
 
+
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = (j0(plane).array() + j1(plane).array() + offset) / (j0P(plane).array() + j1P(plane).array());
-		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
-		plane = plane.array() - dz.array();
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (j0(plane).array()+j1(plane).array()) *(j0P(plane).array()+ j1P(plane).array()) / (2 * pow(j0P(plane).array() + j1P(plane).array(), 2) - (j0(plane).array()+ j1(plane).array()) * (j0PP(plane).array()+j1PP(plane).array()));
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = (j0(plane).array() + j1(plane).array() + offset) / (j0P(plane).array() + j1P(plane).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
 	}
-	return {finalPlane, iterationMap};
+	return { finalPlane, iterationMap };
 }
 
 
@@ -149,12 +214,6 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixZeta(const Eigen::Mat
 		Eigen::MatrixXcd dz = (zeta(plane).array()) / zetaP(plane).array();
 		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
 		plane.array() = plane.array() - dz.array();
-		if (i == 0  || i == config.getIterations() - 1) {
-			//std::cout << "Plane At  " << i << std::endl;
-			//std::cout << plane.array() << i << std::endl;
-			//std::cout << "DZ's for i= " << i << std::endl;
-			//std::cout << abs(dz.array()) << std::endl;
-		}
 	}
 	return std::make_tuple(finalPlane, iterationMap);
 }
@@ -169,14 +228,72 @@ std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixCustomDriver1(const E
 	std::complex<double> c(0, 0);
 	std::complex<double> d(0, -1.*M_PI);
 
+	for (int i = 0; i < config.getIterations(); i++) {
+		printIteration(i, config.getIterations());
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (customDriver1(plane, a, b, c, d).array() * customDriver1P(plane, a, b, c, d).array()) / (2 * pow(customDriver1P(plane, a, b, c, d).array(), 2) - customDriver1(plane, a, b, c, d).array() * customDriver1PP(plane, a, b, c, d).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = customDriver1(plane, a, b, c, d).array() / customDriver1P(plane, a, b, c, d).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+	}
+	return { finalPlane, iterationMap };
+}
+
+std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixCustomDriver2(const Eigen::MatrixXcd plane0, Config& config, std::complex<double> offset) {
+	Eigen::MatrixXcd plane = plane0;
+	Eigen::MatrixXcd finalPlane = plane0.array() - plane0.array();
+	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
+
+	std::complex<double> a(1, 0);
+	std::complex<double> b(0, 0);
+	std::complex<double> c(0, 0);
+	std::complex<double> d(0, -1. * M_PI);
 
 	for (int i = 0; i < config.getIterations(); i++) {
 		printIteration(i, config.getIterations());
-		Eigen::MatrixXcd dz = customDriver1(plane, a, b, c, d).array() / customDriver1P(plane, a, b, c, d).array();
-		fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
-		plane = plane.array() - dz.array();
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (customDriver2(plane, a, b, c, d).array() * customDriver2P(plane, a, b, c, d).array()) / (2 * pow(customDriver2P(plane, a, b, c, d).array(), 2) - customDriver2(plane, a, b, c, d).array() * customDriver2PP(plane, a, b, c, d).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = customDriver2(plane, a, b, c, d).array() / customDriver2P(plane, a, b, c, d).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
 	}
-	return std::make_tuple(finalPlane, iterationMap);
+	return { finalPlane, iterationMap };
+}
+
+std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> iterateMatrixCustomDriver3(const Eigen::MatrixXcd plane0, Config& config, std::complex<double> offset) {
+	Eigen::MatrixXcd plane = plane0;
+	Eigen::MatrixXcd finalPlane = plane0.array() - plane0.array();
+	Eigen::MatrixXd iterationMap = Eigen::MatrixXd::Zero(plane.rows(), plane.cols());
+
+	std::complex<double> a(1, 0);
+	std::complex<double> b(0, 0);
+	std::complex<double> c(0, 0);
+	std::complex<double> d(0, -1. * M_PI);
+
+	for (int i = 0; i < config.getIterations(); i++) {
+		printIteration(i, config.getIterations());
+		if (config.getMethod() == "Halley") {
+			Eigen::MatrixXcd dz = 2 * (customDriver3(plane, a, b, c, d).array() * customDriver3P(plane, a, b, c, d).array()) / (2 * pow(customDriver3P(plane, a, b, c, d).array(), 2) - customDriver3(plane, a, b, c, d).array() * customDriver3PP(plane, a, b, c, d).array());
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+		else if (config.getMethod() == "Newton") {
+			Eigen::MatrixXcd dz = customDriver3(plane, a, b, c, d).array() / customDriver3P(plane, a, b, c, d).array();
+			fillFinalPlane(finalPlane, iterationMap, dz, plane, config, i);
+			plane = plane.array() - dz.array();
+		}
+	}
+	return { finalPlane, iterationMap };
 }
 
 void exportData(Eigen::MatrixXcd finalPlane, Eigen::MatrixXcd iterationMap, Config& config, std::complex<double> offset, int offsetIt) {
@@ -196,7 +313,7 @@ void exportData(Eigen::MatrixXcd finalPlane, Eigen::MatrixXcd iterationMap, Conf
 		finalPlaneVectors.push_back(finalPlaneWFVector);
 	}
 
-	std::string savePath = "C:\\Users\\Michael\\Documents\\Programming\\NewtonBasinImages\\"+ driverString +"\\variableOffset\\" + domainString + "_" + std::to_string(config.getIterations()) + "_" + std::to_string(config.getScreenDivs()) + "_" + std::to_string(offsetIt)+ "_[" + std::to_string(config.getOffsetReal()) + "," + std::to_string(config.getOffsetImag()) + "].csv";
+	std::string savePath = "C:\\Users\\Michael\\Documents\\Programming\\NewtonBasinImages\\"+ driverString +"\\variableOffset\\"+ config.getMethod() + "\\" + domainString + "_" + std::to_string(config.getIterations()) + "_" + std::to_string(config.getScreenDivs()) + "_" + std::to_string(offsetIt) + "_[" + std::to_string(config.getOffsetReal()) + ", " + std::to_string(config.getOffsetImag()) + "]_" + config.getMethod() + ".csv";
 
 	std::ofstream out(savePath);
 	for (int i=0; i < finalPlaneVectors.size(); i++) {
@@ -208,15 +325,15 @@ void exportData(Eigen::MatrixXcd finalPlane, Eigen::MatrixXcd iterationMap, Conf
 }
 
 int main() {
-	std::complex<long double> testing(10., 10.);
 	int numberImages = 1;
 	for (int offsetN = 0; offsetN < numberImages ;offsetN++) {
 		double lissajousA(1.5);
 		double lissajousB(1.5);
 		double lissajousD(0.);
-		std::complex<double> offset(M_PI/3, 0.);
+		std::complex<double> offset(0., 0.);
 
-		Config config(-M_PI/4., M_PI/4., -M_PI/4., M_PI/4., offset, "Bessel", 30, 1e-3, 3000);
+		Config config(-M_PI/10., M_PI / 10., -M_PI / 10., M_PI / 10., offset, "Halley", "CoshSinc", 50, 1e-3, 3000);
+		config.coutParams();
 		Eigen::MatrixXcd plane = config.makeScreen(config);
 		std::string domainString = config.getDomainString(config);
 
@@ -231,6 +348,10 @@ int main() {
 		}
 		else if (config.getDriver() == "Sinh") {
 			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixSinh(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
+		}
+		else if (config.getDriver() == "CoshSinc") {
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixCoshSinc(plane, config, offset);
 			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
 		else if (config.getDriver() == "Tan") {
@@ -257,6 +378,15 @@ int main() {
 			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixCustomDriver1(plane, config, offset);
 			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
 		}
+		else if (config.getDriver() == "CustomDriver2") {
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixCustomDriver2(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
+		}
+		else if (config.getDriver() == "CustomDriver3") {
+			std::tuple<Eigen::MatrixXcd, Eigen::MatrixXd> finalOutput = iterateMatrixCustomDriver3(plane, config, offset);
+			exportData(std::get<0>(finalOutput), std::get<1>(finalOutput), config, offset, offsetN);
+		}
+
 		else {
 			std::cout << config.getDriver();
 			return 1;

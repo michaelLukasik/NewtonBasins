@@ -82,6 +82,13 @@ Eigen::MatrixXcd secant(Eigen::MatrixXcd z) {
 	return 2.*z.array().cos() / ((z.array().cos()* z.array().cos() - z.array().sin()* z.array().sin()) +1);
 }
 
+Eigen::MatrixXcd tangentP(Eigen::MatrixXcd z) {
+	return secant(z);
+}
+
+Eigen::MatrixXcd tangentPP(Eigen::MatrixXcd z) {
+	return (2 * z.array().sin()) / (pow(z.array().cos(), 3));
+}
 
 Eigen::MatrixXcd j0(Eigen::MatrixXcd z) {
 	return z.array().sin() / z.array();
@@ -103,6 +110,10 @@ Eigen::MatrixXcd j1P(Eigen::MatrixXcd z) {
 	return ((z.array() * z.array() - 2.) * z.array().sin() + 2 * z.array() * z.array().cos()) / (z.array() * z.array() * z.array());
 }
 
+Eigen::MatrixXcd j1PP(Eigen::MatrixXcd z) {
+	return ((z.array() * (pow(z.array(), 2) - 6.0) * z.array().cos()) - 3.0 * (pow(z.array(), 2) - 2.0) * z.array().sin()) / pow(z.array(), 4);
+}
+
 Eigen::MatrixXcd y0(Eigen::MatrixXcd z) {
 	return -z.array().cos() / z.array();
 }
@@ -111,6 +122,9 @@ Eigen::MatrixXcd y0P(Eigen::MatrixXcd z) {
 	return (z.array()*z.array().sin() - z.array().cos()) / (z.array() * z.array());
 }
 
+Eigen::MatrixXcd y0PP(Eigen::MatrixXcd z) {
+	return ((z.array() * z.array() - 2.) * z.array().cos() - 2. * z.array() * z.array().sin()) / pow(z.array(), 3);
+}
 
 
 Eigen::MatrixXcd cubic(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) {
@@ -129,6 +143,19 @@ Eigen::MatrixXcd cosh(Eigen::MatrixXcd z) {
 	return z.array().cosh();
 }
 
+Eigen::MatrixXcd coshSinc(Eigen::MatrixXcd z) {
+	return z.array().cosh() / z.array();
+}
+
+Eigen::MatrixXcd coshSincP(Eigen::MatrixXcd z) {
+	return (z.array().sinh() * z.array() - z.array().cosh()) / pow(z.array(), 2);
+}
+Eigen::MatrixXcd coshSincPP(Eigen::MatrixXcd z) {
+	return ((pow(z.array(), 2) + 2.) * z.array().cosh() - 2. * z.array() * z.array().sinh()) / pow(z.array(), 3);
+}
+
+
+
 Eigen::MatrixXcd customDriver1(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { //d/dz(cos(z) (z^3 - a) e^(-(cos(z) - b i))) = e^(-cos(z) + i b) ((a - z^3) sin(z) + cos(z) ((z^3 - a) sin(z) + 3 z^2))
 	std::complex<double> expOffset(0., 1./M_PI);
 	return z.array().cos() * (pow(z.array(), 3) - a) * exp(-(z.array().cos() - b * expOffset));
@@ -138,6 +165,52 @@ Eigen::MatrixXcd customDriver1(Eigen::MatrixXcd z, std::complex<double> a, std::
 Eigen::MatrixXcd customDriver1P(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { // d/dz(cos(z) (z^3 - a) e^(-(cos(z) - b i))) = e^(-cos(z) + i b) ((a - z^3) sin(z) + cos(z) ((z^3 - a) sin(z) + 3 z^2))
 	std::complex<double> expOffset(0., 1./M_PI);
 	return  exp(-(z.array().cos() - b * expOffset)) * (a - pow(z.array(), 3) * z.array().sin() + z.array().cos() * ((pow(z.array(), 3) - a) * z.array().sin() + 3 * pow(z.array(), 2)));
+}
+
+Eigen::MatrixXcd customDriver1PP(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { // d/dz(cos(z) (z^3 - a) e^(-(cos(z) - b i))) = e^(-cos(z) + i b) ((a - z^3) sin(z) + cos(z) ((z^3 - a) sin(z) + 3 z^2))
+	std::complex<double> expOffset(0., 1. / M_PI);
+	Eigen::MatrixXcd exponent = exp((-1.0 * z.array().cos() + b * expOffset));
+	Eigen::MatrixXcd zacube = (pow(z.array(), 3) - a);
+	Eigen::MatrixXcd term1 = zacube.array() * z.array().cos() * -1.0 * exponent.array();
+	Eigen::MatrixXcd term2 = z.array().cos() * (zacube.array() * (z.array().cos() * exponent.array() + pow(z.array().sin(), 2) * exponent.array()));
+	Eigen::MatrixXcd term3 = z.array().cos() * 6.0 * pow(z.array(), 2) * z.array().sin() * exponent.array();
+	Eigen::MatrixXcd term4 = z.array().cos() * 6.0 * z.array() * exponent.array();
+	Eigen::MatrixXcd term5 = 2.0 * z.array().sin() * (zacube.array() * z.array().sin() * exponent.array() + 3.0 * pow(z.array(), 2) * exponent.array());
+	return term1.array() + term2.array() + term3.array() + term4.array() + term5.array();
+}
+
+Eigen::MatrixXcd customDriver2(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { //f(z) == (abs(z) * sin^3(z)) / e^(z/i)
+	std::complex<double> expOffset(0., 1. / M_PI);
+	Eigen::MatrixXcd eiz = exp(expOffset * z.array());
+	return (abs(z.array()) * pow(z.array().sin(), 3)) / eiz.array();
+}
+
+Eigen::MatrixXcd customDriver2P(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { 
+	std::complex<double> eye(0., 1.);
+	Eigen::MatrixXcd eiz = exp(-1.*eye * z.array());
+	return -eye * eiz.array() * abs(z.array()) * pow(z.array().sin(), 3) + ((eiz.array() * z.array() * pow(z.array().sin(), 3)) / abs(z.array())) + (3.0 * eiz.array() * abs(z.array()) * pow(z.array().sin(), 2) * z.array().cos());
+}
+
+Eigen::MatrixXcd customDriver2PP(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { //f(z) == (abs(z) * sin^3(z)) / e^(z/i)
+	std::complex<double> eye(0., 1.);
+	Eigen::MatrixXcd eiz = exp(-1. * eye * z.array());
+	Eigen::MatrixXcd term1 = pow(z.array().sin(), 3) * ((-2.0 * eye * eiz.array() * z.array()) / abs(z.array()) - (eiz.array() * abs(z.array())));
+	Eigen::MatrixXcd term2 = eiz.array() * abs(z.array()) * (6.0 * z.array().sin() * pow(z.array().cos(), 2) - 3.0 * pow(z.array().sin(), 3));
+	Eigen::MatrixXcd term3 = 6.0 * ((eiz.array() * z.array() / abs(z.array())) - eye * eiz.array() * abs(z.array())) * z.array().cos() * pow(z.array().sin(), 2);
+	return term1 + term2 + term3;
+}
+
+
+Eigen::MatrixXcd customDriver3(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { 
+	return 3. * z.array().imag().cos() + 7. * z.array().real().sin();
+}
+
+Eigen::MatrixXcd customDriver3P(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) {
+	return -3.* z.array().imag().sin() + 7. * z.array().real().cos();
+}
+
+Eigen::MatrixXcd customDriver3PP(Eigen::MatrixXcd z, std::complex<double> a, std::complex<double> b, std::complex<double> c, std::complex<double> d) { 
+	return  -3. * z.array().imag().cos() + -7. * z.array().real().sin();
 }
 
 std::complex<double> computeZeta(std::complex<double> s) {

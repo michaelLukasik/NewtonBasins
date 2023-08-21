@@ -39,9 +39,8 @@ def plot_newton_fractal(simData, config, file):  ## Adapted from the SciPy Docs 
     for iz0,z0 in enumerate(z):
         i_iter = basinFunctions.get_iteration_index(iterations, simData[4], config)
         m[math.floor(iz0/config.n),math.floor(iz0 % config.n)] = i_iter[0][iz0]
-        #print(m)
-        #if(iz0%100 == 0): 
-        #    print(iz0)
+
+        ## Uncomment below if we want to plot which root the point belongs to
         #i_iter = get_root_index(roots, z0, config)
         #m[math.floor(iz0/config.n), math.floor(iz0 % config.n)] = i_iter
     nroots = len(roots)
@@ -57,9 +56,9 @@ def plot_newton_fractal(simData, config, file):  ## Adapted from the SciPy Docs 
 def makeBasin(m, config, file):
     print("Making basin")
     plt.figure(figsize = (10,10))
-    plt.imshow(m, cmap=config.cmap, origin='lower')
+    plt.imshow(m, cmap=config.cmap, origin='lower', interpolation='nearest')
     plt.axis('off')
-    plt.savefig(file[:-4] + "_"+ config.cmap + "_" + str(config.tol) + ".png",bbox_inches='tight', transparent="True", pad_inches=0)
+    plt.savefig(file[:-4] + "_"+ config.cmap + "_" + str(config.tol) + ".png",bbox_inches='tight', transparent="True", pad_inches=0, dpi = 100)
     #plt.show() 
    
 def gifBasins(folder, folderOrderList):
