@@ -1,5 +1,5 @@
 # NewtonBasins
-Quick Little program for generating newton basins according to newtons method. The plotting is in a python script to folow. 
+Quick Little program for generating newton basins according to newtons method As well as higher order householder methods. Right now, HHM up to n=2 are supported (aka up to Halley's Method), but more to follow. 
 
 The basic idea is to drive each step via the ratio between the fuinction value and its derivative, hopefully driving each point towards its root (or, I supopose, a saddle point). The point can then be colored according to the root it belongs to telling us about the over all structure of the function in the complex plane. Areas of high instability (i.e. where the domains swap quickly in regards to pixel value) represent areas of equal-ish "influence" from the given functions roots. 
 
